@@ -180,7 +180,8 @@ def predict():
                      age_per_loanamount, employed_other, age_employed, age_other]]
         
         # Probability of Default 
-        pd = model.predict_proba(features)[:, 0]
+        #pd = model.predict_proba(features)[:, 0]
+        pd = model.predict(features)
         #output = pd * 100
         
         # Taking care of invalid outputs -that is, results less than 0 or greater than 100.
