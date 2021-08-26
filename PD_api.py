@@ -87,19 +87,19 @@ def predict():
         # Categorical features.
         # loanterm -15days, 30days, 60days, 90days(reference category).
         termdays_15 = request.form['termdays_15']
-        if termdays_15 == '15days':
+        if termdays_15 == '15':
             termdays_15 = 1
             termdays_30 = 0
             termdays_60 = 0
             #termdays_90 = 0
             
-        elif termdays_15 == '30days':
+        elif termdays_15 == '30':
             termdays_15 = 0
             termdays_30 = 1
             termdays_60 = 0
             #termdays_90 = 0
             
-        elif termdays_15 == '60days':
+        elif termdays_15 == '60':
             termdays_15 = 0
             termdays_30 = 0
             termdays_60 = 1
@@ -142,7 +142,7 @@ def predict():
             employment_status_clients_Self_Employed = 0
             employment_status_clients_Student = 0
             
-        elif employment_status_clients_Employed == 'Self-Employed':
+        elif employment_status_clients_Employed == 'Self_Employed':
             employment_status_clients_Employed = 0
             employment_status_clients_Others = 0
             employment_status_clients_Self_Employed = 1
