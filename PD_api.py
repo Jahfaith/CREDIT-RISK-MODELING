@@ -80,9 +80,9 @@ def predict():
     if request.method == 'POST':
         
         # Numeric features.
-        Age = request.form['age']
-        Amount = request.form['loanamount']
-        Number_of_previous_loans = request.form['loannumber']
+        age = request.form['age']
+        loanamount = request.form['loanamount']
+        loannumber = request.form['loannumber']
         
         # Categorical features.
         # loanterm -15days, 30days, 60days, 90days(reference category).
@@ -161,21 +161,21 @@ def predict():
             employment_status_clients_Student = 0
             
         # Engineered Features.
-        age_per_loannumber = round(Age/Number_of_previous_loans, 2)
-        amount_per_loannumber = round(Amount/Number_of_previous_loans, 2)
-        age_per_loanamount = round(Age/Amount, 2)
+        age_per_loannumber = round(age/loannumber, 2)
+        amount_per_loannumber = round(loanamount/loannumber, 2)
+        age_per_loanamount = round(age/loanamount, 2)
         
         if (employment_status_clients_Employed == 'Employed') and (bank_account_type_Other == 'Other'):
             employed_other = employment_status_clients_Employed * bank_account_type_Other
             
         if (employment_status_clients_Employed == 'Employed'):
-            age_employed = Age * employment_status_clients_Employed
+            age_employed = age * employment_status_clients_Employed
             
         if (bank_account_type_Other == 'Other'):
-            age_other = Age * bank_account_type_Other
+            age_other = age * bank_account_type_Other
             
         # Prediction.
-        features = [[Age, Amount, Number_of_previous_loans, termdays_15, bank_account_type_Other, 
+        features = [[age, loanamount, loannumber, termdays_15, bank_account_type_Other, 
                      employment_status_clients_Employed, age_per_loannumber, amount_per_loannumber, 
                      age_per_loanamount, employed_other, age_employed, age_other]]
         
