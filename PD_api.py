@@ -109,6 +109,7 @@ def predict():
             termdays_15 = 0
             termdays_30 = 0
             termdays_60 = 0
+            #termdays_90 = 1
 
             
         # Bank_account_type
@@ -180,18 +181,18 @@ def predict():
         
         # Probability of Default 
         pd = model.predict_proba(features)[:, 0]
-        output = pd * 100
+        #output = pd * 100
         
         # Taking care of invalid outputs -that is, results less than 0 or greater than 100.
-        if output<0:
+        if pd<0:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
-        elif output>100:
+        elif output>1:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
         # If there are no anomalies in the result, print the output.
         else:
-            return render_template('index.html', prediction_text='Your Probability of Default is {}%'.format(output))
+            return render_template('index.html', prediction_text='Your Probability of Default is {}'.format(pd))
      
     # Display the form.
     else:
