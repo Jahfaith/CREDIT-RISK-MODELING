@@ -187,7 +187,7 @@ def predict():
         if pd<0:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
-        elif output>1:
+        elif pd>1:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
         # If there are no anomalies in the result, print the output.
