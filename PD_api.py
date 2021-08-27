@@ -7,7 +7,6 @@
 # Importing relevant libraries.
 from flask import Flask, request, render_template, json, jsonify
 import pickle
-import logging
 
 
 # In[2]:
@@ -22,44 +21,6 @@ app = Flask('PD_Model')
 
 # Load (deserialize) the pickled model.
 model = pickle.load(open('PD_Model.pkl', 'rb'))
-
-
-# In[4]:
-
-
-# Include logging endpoints for healthcheck/status and metrics
-@app.route('/status')
-def healthcheck():
-    response = app.response_class(
-            response = json.dumps({'status': 'OK'}),
-            status = 200,
-            mimetype = 'application/json'
-    )
-        
-    app.logger.info('Status request was successful!')
-    return response
-
-
-# In[5]:
-
-
-@app.route('/metrics')
-def metrics():
-    response = app.response_class(
-                response = json.dumps({'result': 'success'}),
-                status = 200,
-                mimetype = 'application/json'
-    )
-    
-    app.logger.info('Metrics request was successful!')
-    return response
-
-
-# In[6]:
-
-
-# Stream logs to a file.
-logging.basicConfig(filename='PD_api.log', level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 # In[7]:
@@ -77,12 +38,18 @@ def Home():
 
 # Define the predict function to use the pickled model to predict inputs from the form.
 def predict():
+    
     if request.method == 'POST':
         
         # Numeric features.
         age = request.form['age']
+        age = int(age)
+        
         loanamount = request.form['loanamount']
+        loanamount = int(loanamount)
+        
         loannumber = request.form['loannumber']
+        loannumber = int(loannumber)
         
         # Categorical features.
         # loanterm -15days, 30days, 60days, 90days(reference category).
@@ -109,7 +76,6 @@ def predict():
             termdays_15 = 0
             termdays_30 = 0
             termdays_60 = 0
-            #termdays_90 = 1
 
             
         # Bank_account_type
@@ -165,35 +131,39 @@ def predict():
         amount_per_loannumber = round(loanamount/loannumber, 2)
         age_per_loanamount = round(age/loanamount, 2)
         
+        employed_other = employment_status_clients_Employed * bank_account_type_Other
         if (employment_status_clients_Employed == 'Employed') and (bank_account_type_Other == 'Other'):
-            employed_other = employment_status_clients_Employed * bank_account_type_Other
+            return employed_other
             
+        age_employed = age * employment_status_clients_Employed
         if (employment_status_clients_Employed == 'Employed'):
-            age_employed = age * employment_status_clients_Employed
-            
+            return age_employed
+                    
+        age_other = age * bank_account_type_Other
         if (bank_account_type_Other == 'Other'):
-            age_other = age * bank_account_type_Other
-            
+            return age_other
+                    
         # Prediction.
-        features = [[age, loanamount, loannumber, termdays_15, bank_account_type_Other, 
-                     employment_status_clients_Employed, age_per_loannumber, amount_per_loannumber, 
-                     age_per_loanamount, employed_other, age_employed, age_other]]
+        features = [[age, loanamount, loannumber, termdays_15, termdays_30, termdays_60, bank_account_type_Other,
+                     bank_account_type_Savings, employment_status_clients_Employed, employment_status_clients_Others,
+                     employment_status_clients_Self_Employed, employment_status_clients_Student, age_per_loannumber, 
+                     amount_per_loannumber, age_per_loanamount, employed_other, age_employed, age_other]]
         
         # Probability of Default 
-        #pd = model.predict_proba(features)[:, 0]
-        pd = model.predict(features)
-        #output = pd * 100
+        pd = model.predict_proba(features)[:, 0]
+        output = pd * 100
         
+        # Outputting the result
         # Taking care of invalid outputs -that is, results less than 0 or greater than 100.
-        if pd<0:
+        if output<0:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
-        elif pd>1:
+        elif output>100:
             return render_template('index.html', prediction_text='Invalid result for this user')
         
         # If there are no anomalies in the result, print the output.
         else:
-            return render_template('index.html', prediction_text='Your Probability of Default is {}'.format(pd))
+            return render_template('index.html', prediction_text="Your Probability of Default is {}%".format(output))
      
     # Display the form.
     else:
