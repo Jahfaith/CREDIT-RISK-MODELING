@@ -42,15 +42,25 @@ def predict():
     if request.method == 'POST':
         
         # Numeric features.
-        age = request.form['age']
-        age = int(age)
+        age = int(request.form['age'])
+        # Setting a condition to ensure that age is above 17.
+        if age < 18:
+            return render_template('index.html', prediction_text='Not within eligible age')
+        elif age > 75:
+            return render_template('index.html', prediction_text='Not within eligible age')
         
-        loanamount = request.form['loanamount']
-        loanamount = int(loanamount)
-        
-        loannumber = request.form['loannumber']
-        loannumber = int(loannumber)
-        
+        loanamount = int(request.form['loanamount'])
+        # Setting a condition to ensure that the amount entered is between 5000 and 60000.
+        if loanamount < 5000:
+            return render_template('index.html', prediction_text='Please enter a loan amount above 4999')
+        elif loanamount > 60000:
+            return render_template('index.html', prediction_text='Please enter a loan amount below 61000')
+      
+        loannumber = int(request.form['loannumber'])
+        # Setting a condition to ensure that zero is not allowed in this field.
+        if loannumber < 1:
+            return render_template('index.html', prediction_text='Please enter a loan number')
+
         # Categorical features.
         # loanterm -15days, 30days, 60days, 90days(reference category).
         termdays_15 = request.form['termdays_15']
@@ -127,8 +137,11 @@ def predict():
             employment_status_clients_Student = 0
             
         # Engineered Features.
+
         age_per_loannumber = round(age/loannumber, 2)
+      
         amount_per_loannumber = round(loanamount/loannumber, 2)
+            
         age_per_loanamount = round(age/loanamount, 2)
         
         employed_other = employment_status_clients_Employed * bank_account_type_Other
@@ -154,6 +167,7 @@ def predict():
         output = pd * 100
         
         # Outputting the result
+                
         # Taking care of invalid outputs -that is, results less than 0 or greater than 100.
         if output<0:
             return render_template('index.html', prediction_text='Invalid result for this user')
