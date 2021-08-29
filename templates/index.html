@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Credit Risk (PD Model)</title>
+    </head>
+    
+<!-- Adding styles like colour, height, width, border to our html page -->
+<style>
+
+
+input[type=text], select {
+  width: 80%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-weight: bolder;
+}
+
+input[type=submit] {
+  width: 80%;
+  background-color: goldenrod;
+  color:black;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size:100;
+  font-weight: bolder;
+}
+
+
+input[type=submit]:hover {
+  background-color: orangered;
+}
+form{
+    border-radius: 10px;
+    padding-top: 5%;
+    font-weight: bolder;
+}
+div {
+ 
+  border-radius: 5px;
+  margin-left: 35%;
+  width: 30%;
+  
+}
+h1{
+    color: goldenrod;
+    font-size: 40px;
+    font-weight: bolder;
+}
+h3{
+  color: white;
+}
+
+body {
+            
+            background-image: url("static/img/lending.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+            padding: 0px;
+        }
+       
+</style>
+
+<body>
+
+<h1>Credit Risk Level</h1>
+
+<div>
+ <!-- Html form which will get all the values from user -->
+ <form action="{{ url_for('predict')}}" method="post" style="background-color:#E6E6FA">
+
+<label for="age">Age</label><br>
+<input type="text" id="age" name="age" placeholder="age" required="required"><br>
+
+<label for="loanamount">Amount</label><br>
+<input type="text" id="loanamount" name="loanamount" placeholder="amount" required="required"><br>
+
+<label for="loannumber">Number_of_previous_loans</label><br>
+<input type="text" id="loannumber" name="loannumber" placeholder="number" required="required"><br>
+
+
+
+<!-- drop down options are provided for the categorical features -->
+<label for="termdays_15">Loan_term(days)</label><br>
+<select id="termdays_15" name="termdays_15">
+      <option value="termdays_15">15</option>
+      <option value="termdays_30">30</option>
+      <option value="termdays_60">60</option>
+      <option value="termdays_90">90</option>
+    </select><br>
+<label for="bank_account_type_Other">Bank_account_type</label><br>
+    <select id="bank_account_type_Other" name="bank_account_type_Other" required="required">
+      <option value="Savings">Savings</option>
+      <option value="Current">Current</option>
+      <option value="Other">Other</option>
+    </select><br>
+<label for="employment_status_clients_Employed">Employment_status</label><br>
+    <select id="employment_status_clients_Employed" name="employment_status_clients_Employed" required="required">
+      <option value="Employed">Employed</option>
+      <option value="Self_Employed">Self_Employed</option>
+      <option value="Student">Student</option>
+      <option value="Others">Others</option>
+      </select><br>
+     
+<!-- submit button -->           
+<input type="submit" value="Predict">
+</form>
+</div>
+    
+<!-- the predicted text -->
+<h3>{{ prediction_text }}</h3>
+
+</body>
+</html>
