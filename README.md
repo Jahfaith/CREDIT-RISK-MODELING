@@ -1,3 +1,4 @@
+![PD_app](https://user-images.githubusercontent.com/52711069/131677155-bbde0d29-e2f8-47fd-9bc1-e4931205945e.jpeg)
 # CREDIT-RISK-MODELING
 Using Machine Learning to determine customers' credit worthiness based on their risk of default on loans. A customer's credit worthiness 
 is inversely proportional to their probability of default (PD). This implies that the higher the PD the lower the credit worthiness of a person.
